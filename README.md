@@ -14,14 +14,14 @@ A comprehensive DNS analysis tool for detecting various DNS abuse techniques inc
 2. **Clone and build the tool**:
    ```bash
    # Create project directory
-   mkdir dns-threat-hunter && cd dns-threat-hunter
+    git clone https://github.com/faanross/dns_upload_hunter.git
    
-   # Save the main.go and go.mod files
-   # Then install dependencies
+   # Install dependencies
    go mod tidy
    
-   # Build the binary
-   go build -o dns-threat-hunter main.go
+   # Run Application 
+   go run ./cmd
+
    ```
 
 3. **Install required system dependencies**:
@@ -42,41 +42,41 @@ A comprehensive DNS analysis tool for detecting various DNS abuse techniques inc
 
 ```bash
 # Show help
-./dns-threat-hunter --help
+go run ./cmd --help
 
 # Analyze TXT records for encoded data
-./dns-threat-hunter txt-analysis -p capture.pcap
+go run ./cmd txt-analysis -p capture.pcap
 
 # Detect NULL records (high confidence malicious)
-./dns-threat-hunter null-detect -p capture.pcap
+go run ./cmd null-detect -p capture.pcap
 
 # Detect subdomain encoding
-./dns-threat-hunter subdomain-encoding -p capture.pcap
+go run ./cmd subdomain-encoding -p capture.pcap
 
 # Detect DNS beaconing behavior
-./dns-threat-hunter beacon-detect -p capture.pcap
+go run ./cmd beacon-detect -p capture.pcap
 
 # Run all detection methods
-./dns-threat-hunter full-analysis -p capture.pcap
+go run ./cmd full-analysis -p capture.pcap
 
 # Monitor live DNS traffic (requires root/admin)
-sudo ./dns-threat-hunter live-monitor
+go run ./cmd live-monitor
 ```
 
 ### Advanced Options
 
 ```bash
 # Save results to file
-./dns-threat-hunter full-analysis -p capture.pcap -o results.txt
+go run ./cmd full-analysis -p capture.pcap -o results.txt
 
 # Verbose output with additional details
-./dns-threat-hunter txt-analysis -p capture.pcap -v
+go run ./cmd txt-analysis -p capture.pcap -v
 
 # Custom entropy threshold (default: 4.0)
-./dns-threat-hunter txt-analysis -p capture.pcap -t 3.5
+go run ./cmd txt-analysis -p capture.pcap -t 3.5
 
 # Combine options
-./dns-threat-hunter full-analysis -p capture.pcap -o report.txt -v -t 4.5
+go run ./cmd full-analysis -p capture.pcap -o report.txt -v -t 4.5
 ```
 
 ## Detection Methods
@@ -136,19 +136,19 @@ The tool provides structured output with:
 
 2. **Run full analysis**:
    ```bash
-   ./dns-threat-hunter full-analysis -p dns_capture.pcap -o report.txt -v
+   go run ./cmd full-analysis -p dns_capture.pcap -o report.txt -v
    ```
 
 3. **Investigate specific indicators**:
    ```bash
    # If TXT abuse was detected, deep dive:
-   ./dns-threat-hunter txt-analysis -p dns_capture.pcap -v
+   go run ./cmd txt-analysis -p dns_capture.pcap -v
    ```
 
 4. **Set up continuous monitoring**:
    ```bash
    # In a screen/tmux session:
-   sudo ./dns-threat-hunter live-monitor
+   sudo go run ./cmd live-monitor
    ```
 
 ## Integration Examples
@@ -157,14 +157,14 @@ The tool provides structured output with:
 ```bash
 # Capture only DNS traffic for analysis
 sudo tcpdump -i any -w dns_only.pcap -c 10000 port 53
-./dns-threat-hunter full-analysis -p dns_only.pcap
+go run ./cmd full-analysis -p dns_only.pcap
 ```
 
 ### With tshark
 ```bash
 # Extract DNS from existing capture
 tshark -r full_capture.pcap -Y "dns" -w dns_filtered.pcap
-./dns-threat-hunter full-analysis -p dns_filtered.pcap
+go run ./cmd full-analysis -p dns_filtered.pcap
 ```
 
 ### Automated Analysis Script
@@ -204,7 +204,7 @@ mv "$CAPTURE_DIR/dns_$TIMESTAMP.pcap" "$CAPTURE_DIR/dns_current.pcap"
 - **Live monitoring**: Processes packets in real-time. High-volume networks may need filtering:
   ```bash
   # Filter by specific subnet
-  sudo ./dns-threat-hunter live-monitor --filter "src net 192.168.1.0/24"
+  sudo go run ./cmd live-monitor --filter "src net 192.168.1.0/24"
   ```
 
 ## Troubleshooting
@@ -212,7 +212,7 @@ mv "$CAPTURE_DIR/dns_$TIMESTAMP.pcap" "$CAPTURE_DIR/dns_current.pcap"
 ### Permission Denied (Live Monitoring)
 ```bash
 # Must run as root for packet capture
-sudo ./dns-threat-hunter live-monitor
+sudo go run ./cmd live-monitor
 ```
 
 ### No Network Devices Found
